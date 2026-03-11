@@ -38,18 +38,38 @@ from qgis.core import QgsProcessingParameterVectorLayer
 from qgis.core import QgsProcessingParameterField
 from qgis.core import QgsProcessingParameterRasterDestination
 from qgis.core import QgsProcessingParameterFeatureSink
+from qgis.core import Qgis
 import os
 import processing
+
+# ============================================================================
+# QGIS 4.0 / Qt6 compatibility
+# ============================================================================
+if Qgis.QGIS_VERSION_INT >= 40000:
+    # Source types
+    _TYPE_POLYGON  = Qgis.ProcessingSourceType.VectorPolygon
+    _TYPE_ANY_GEOM = Qgis.ProcessingSourceType.VectorAnyGeometry
+
+    # Field data type
+    _FIELD_NUMERIC = QgsProcessingParameterField.DataType.Numeric
+
+else:
+    # Source types
+    _TYPE_POLYGON  = QgsProcessing.TypeVectorPolygon
+    _TYPE_ANY_GEOM = QgsProcessing.TypeVectorAnyGeometry
+
+    # Field data type
+    _FIELD_NUMERIC = QgsProcessingParameterField.Numeric
 
 
 class SeismicMicrozonationAlgorithm(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer('digital_terrain_model_dtm', 'Digital Terrain Model (DTM)', defaultValue=None))
-        self.addParameter(QgsProcessingParameterVectorLayer('layer_with_il_index', 'Layer with IL index', types=[QgsProcessing.TypeVectorPolygon], defaultValue=None))
-        self.addParameter(QgsProcessingParameterField('il_index', 'IL index', type=QgsProcessingParameterField.Numeric, parentLayerParameterName='layer_with_il_index', allowMultiple=False, defaultValue=None))
+        self.addParameter(QgsProcessingParameterVectorLayer('layer_with_il_index', 'Layer with IL index', types=[_TYPE_POLYGON], defaultValue=None))  # ← QGIS 4.0: Qgis.ProcessingSourceType.VectorPolygon
+        self.addParameter(QgsProcessingParameterField('il_index', 'IL index', type=_FIELD_NUMERIC, parentLayerParameterName='layer_with_il_index', allowMultiple=False, defaultValue=None))  # ← QGIS 4.0: QgsProcessingParameterField.DataType.Numeric
         self.addParameter(QgsProcessingParameterRasterDestination('Slope', 'slope%', createByDefault=True, defaultValue=''))
-        self.addParameter(QgsProcessingParameterFeatureSink('Sz_rz_lateral_spreading', 'SZ_RZ_lateral_spreading', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, supportsAppend=True, defaultValue='TEMPORARY_OUTPUT'))
+        self.addParameter(QgsProcessingParameterFeatureSink('Sz_rz_lateral_spreading', 'SZ_RZ_lateral_spreading', type=_TYPE_ANY_GEOM, createByDefault=True, supportsAppend=True, defaultValue='TEMPORARY_OUTPUT'))  # ← QGIS 4.0: Qgis.ProcessingSourceType.VectorAnyGeometry
 
     def processAlgorithm(self, parameters, context, model_feedback):
         # Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the
@@ -100,6 +120,17 @@ class SeismicMicrozonationAlgorithm(QgsProcessingAlgorithm):
         results['Slope'] = outputs['Pendenza']['OUTPUT']
 
         feedback.setCurrentStep(2)
+        if feedback.isCanceled():
+            return {}
+        
+        # Imposta stile layer
+        alg_params = {
+            'INPUT': outputs['Pendenza']['OUTPUT'],
+            'STYLE': os.path.join(os.path.dirname(__file__), "styles", "slope.qml")
+        }
+        outputs['ImpostaStileLayer'] = processing.run('native:setlayerstyle', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
+
+        feedback.setCurrentStep(3)
         if feedback.isCanceled():
             return {}
 
@@ -725,6 +756,7 @@ class SeismicMicrozonationAlgorithm(QgsProcessingAlgorithm):
         feedback.setCurrentStep(47)
         if feedback.isCanceled():
             return {}
+        output_layer_name = "SZ_RZ_lateral_spreading"
 
         # Imposta stile layer
         alg_params = {
@@ -769,7 +801,6 @@ class SeismicMicrozonationAlgorithm(QgsProcessingAlgorithm):
 <p><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
 <html><head><meta name="qrichtext" content="1" /><style type="text/css">
 </style></head><body style=" font-family:'MS Shell Dlg 2'; font-size:9.5pt; font-weight:400; font-style:normal;">
-<p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><br /></p></body></html></p><br><p align="right">Autore algoritmo: Giuseppe Cosentino (Pino)</p><p align="right">Versione algoritmo: 0.3 20250202</p></body></html>"""
 
     def createInstance(self):
         return SeismicMicrozonationAlgorithm()

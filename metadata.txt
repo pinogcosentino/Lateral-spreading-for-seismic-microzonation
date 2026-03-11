@@ -1,8 +1,9 @@
 [general]
 name=Lateral spreading
-qgisMinimumVersion=3.34
+qgisMinimumVersion=3.16
+qgisMaximumVersion=4.99
 description=Lateral spreading for seismic microzonation
-version=0.4
+version=1.0.0
 author=Giuseppe Cosentino (Pino)
 email=giuseppe.cosentino@cnr.it
 
@@ -15,24 +16,27 @@ repository=https://github.com/pinogcosentino/Lateral-spreading-for-seismic-micro
 # Recommended items:
 
 hasProcessingProvider=yes
-# Uncomment the following line and add your changelog:
-# changelog=
-<b>v0.4:</b>
-    - Fixed some minor issues
-	- new icon
-<b>v0.3:</b>
-	- Merged Layers: SZ0, RZ and SZ
-    - Style layer
-	- Numeric coding and the description of the formula in the layer table
-    - Fixed some minor issues 
-<b>v0.2:</b>
-	- Slope layer 
-    - Fixed solved calculation SZ
-    - Fixed some minor issues 
 
+changelog=
+	<b>v1.0.0:</b>
+		- Full compatibility with QGIS 4.x (PyQt6, Qt6 enums)
+		- Backward compatible with QGIS 3.16+ (PyQt5)
+		- Updated enum references: Qgis.ProcessingSourceType, QgsProcessingParameterField.DataType
+	<b>v0.4:</b>
+		- Fixed some minor issues
+		- new icon
+	<b>v0.3:</b>
+		- Merged Layers: SZ0, RZ and SZ
+		- Style layer
+		- Numeric coding and the description of the formula in the layer table
+		- Fixed some minor issues
+	<b>v0.2:</b>
+		- Slope layer
+		- Fixed solved calculation SZ
+		- Fixed some minor issues
 
 # Tags are comma separated with spaces allowed
-tags=geology, seismic microzonation,  geoprocessing
+tags=geology, seismic microzonation, geoprocessing
 
 homepage=https://github.com/pinogcosentino/Lateral-spreading-for-seismic-microzonation/tree/main
 category=Geoprocessing
@@ -53,4 +57,3 @@ Category of the plugin: Raster, Vector, Database or Web
 
 # If the plugin can run on QGIS Server.
 server=False
-
