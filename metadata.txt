@@ -3,11 +3,13 @@ name=Lateral spreading
 qgisMinimumVersion=3.16
 qgisMaximumVersion=4.99
 description=Lateral spreading for seismic microzonation
-version=1.0.0
+description[it]=Lateral spreading per la microzonazione sismica
+version=1.0.1
 author=Giuseppe Cosentino (Pino)
 email=giuseppe.cosentino@cnr.it
 
 about=Lateral spreading is a geotechnical phenomenon that occurs when the ground moves laterally under the influence of external forces, such as an earthquake. This phenomenon is also influenced by the morphological slope of the terrain. It primarily occurs in water-saturated sandy soils that, when subjected to stress, lose their cohesion and behave like a fluid; a phenomenon known as liquefaction. As a result, the ground moves laterally, creating potential risks for buildings and infrastructure.
+about[it]=Lateral spreading è un fenomeno geotecnico che si verifica quando il terreno si sposta lateralmente sotto l'influenza di forze esterne, come un terremoto. Questo fenomeno è influenzato anche dalla pendenza morfologica del terreno. Si verifica principalmente in terreni sabbiosi saturi d'acqua che, se sottoposti a sollecitazioni, perdono la loro coesione e si comportano come un fluido, questo fenomeno è noto come liquefazione. Di conseguenza, il terreno si sposta lateralmente, creando potenziali rischi per edifici e infrastrutture.
 
 tracker=https://github.com/pinogcosentino/Lateral-spreading-for-seismic-microzonation/pulls
 repository=https://github.com/pinogcosentino/Lateral-spreading-for-seismic-microzonation
@@ -18,6 +20,8 @@ repository=https://github.com/pinogcosentino/Lateral-spreading-for-seismic-micro
 hasProcessingProvider=yes
 
 changelog=
+	<b>v1.0.1:</b>
+		- Inserted icon into the QGIS menu bar
 	<b>v1.0.0:</b>
 		- Full compatibility with QGIS 4.x (PyQt6, Qt6 enums)
 		- Backward compatible with QGIS 3.16+ (PyQt5)
